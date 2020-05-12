@@ -1,0 +1,22 @@
+{
+  "name": "swarm-macdonalds",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ui javascript-page test",
+    "dev": "ui javascript-page dev",
+    "build:app": "ui javascript-page build:app",
+    "test:watch": "ui javascript-page test:watch",
+    "lint": "ui javascript-page lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ocd-ui/javascript-page": "^0.2.4",
+    "hsluv": "^0.1.0",
+    "mapbox-gl": "^0.53.1",
+    "tachyons": "^4.12.0"
+  }
+}
