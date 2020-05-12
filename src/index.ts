@@ -67,6 +67,8 @@ points.features.forEach((feature, id) => {
     [103.596954345, 1.23312012479],
     [104.049453735, 1.47887018872],
   ])
+  map.dragRotate.disable()
+  map.touchZoomRotate.disableRotation()
 
   // state
   let state = {
@@ -85,6 +87,10 @@ points.features.forEach((feature, id) => {
       data: contours,
     })
     map.addSource('points', {
+      type: 'geojson',
+      data: points,
+    })
+    map.addSource('points-dimmed', {
       type: 'geojson',
       data: points,
     })
@@ -123,6 +129,18 @@ points.features.forEach((feature, id) => {
       },
     })
     map.addLayer({
+      id: 'points-dimmed',
+      type: 'circle',
+      source: 'points-dimmed',
+      paint: {
+        'circle-radius': 4,
+        'circle-color': ['get', 'color'],
+        'circle-stroke-color': '#fff',
+        'circle-stroke-width': 2,
+        'circle-opacity': 0.5,
+      },
+    })
+    map.addLayer({
       id: 'points-shadow',
       type: 'circle',
       source: 'points',
@@ -146,6 +164,10 @@ points.features.forEach((feature, id) => {
     })
 
     // events
+    map.on('click', 'contours-fill', function (evt) {
+      evt.preventDefault()
+      evt.stopPropagation() // let’s just throw an error
+    })
     map.on('mousemove', 'contours-fill', function (evt) {
       map.getCanvas().style.cursor = 'pointer'
       if (evt.features.length > 0) {
