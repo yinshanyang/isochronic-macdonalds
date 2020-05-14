@@ -13,11 +13,55 @@ container.className = 'w-100 h-100 absolute top-0 bottom-0 left-0 right-0'
 document.body.append(container)
 
 // data stuff
-const contours = require('./data/contours.geo.json')
-const points = require('./data/macdonalds.geo.json')
+const contours = require('./data/mrts.contours.geo.json')
+const points = require('./data/mrts.geo.json')
 
 // prepare the data
 // sort points by longitude
+const ids = points.features.map((feature) => feature.properties.name)
+const lines = {}
+ids.forEach((id) => {
+  const parts = id.split(';')
+  const lineSymbols = parts.map((part) => part.slice(0, 2))
+  lineSymbols.forEach((line) => {
+    lines[line] = lines[line] || { id: line, stops: 0 }
+    lines[line].stops += 1
+  })
+})
+const colors = {
+  CC: [60, 100],
+  CE: [60, 100],
+  CG: [128, 80],
+  EW: [128, 80],
+  NS: [0, 90],
+  DT: [250, 80],
+  NE: [285, 60],
+  TE: [40, 50],
+  // combinations
+  NSEW: [110, 100],
+  NSTE: [20, 100],
+  NSCC: [30, 100],
+  NSDT: [340, 100],
+  NSNECC: [340, 100],
+  NSCETE: [340, 100],
+
+  EWCC: [110, 100],
+  EWDT: [150, 100],
+  EWNS: [110, 100],
+  CGDT: [150, 100],
+
+  NECC: [310, 100],
+  NEDT: [270, 100],
+  NEEWTE: [310, 100],
+
+  CCDT: [80, 100],
+  CEDT: [80, 100],
+  CCTE: [60, 100],
+
+  DTTE: [220, 100],
+  // CCDT: []
+}
+
 const pointsSortedByLongitude = points.features
   .map((feature) => ({
     name: feature.properties.name,
@@ -29,12 +73,23 @@ pointsSortedByLongitude.forEach(({ name }, index) => {
   const feature = points.features.find(
     ({ properties }) => properties.name === name
   )
+  const id = feature.properties.id.split(';')
+  const line = id
+    .map((d) => d.slice(0, 2))
+    .filter((d) => d !== 'JE' && d !== 'JS' && d !== 'PT' && d !== 'CR')
+    .join('')
   pointsHash[name] = {
     coordinates: {
       lat: feature.geometry.coordinates[1],
       lng: feature.geometry.coordinates[0],
     },
-    color: hsluv.hsluvToHex([(index / contours.features.length) * 360, 50, 50]),
+    // color: hsluv.hsluvToHex([(index / contours.features.length) * 360, 50, 50]),
+    color: hsluv.hsluvToHex([
+      colors[line] && colors[line][0],
+      // ((stop - 1) / lines[line].stops) * 60 + 40,
+      colors[line] && colors[line][1],
+      65,
+    ]),
   }
 })
 
@@ -108,11 +163,11 @@ points.features.forEach((feature, id) => {
             'case',
             ['boolean', ['feature-state', 'hover'], false],
             0.7,
-            0.1,
+            0.2,
           ],
         },
-      },
-      'water'
+      }
+      // 'water'
     )
     map.addLayer({
       id: 'contours-stroke',
