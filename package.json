@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ocd-ui/javascript-page": "^0.2.4",
+    "@ocd-ui/javascript-page": "^0.2.14",
     "hsluv": "^0.1.0",
     "mapbox-gl": "^0.53.1",
     "tachyons": "^4.12.0"
